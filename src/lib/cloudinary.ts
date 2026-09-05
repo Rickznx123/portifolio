@@ -2,6 +2,7 @@ const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const apiKey = import.meta.env.VITE_CLOUDINARY_API_KEY;
 
 const acceptedVideoTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
+const acceptedImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
 type CloudinarySignature = {
   signature: string;
@@ -23,6 +24,11 @@ export function validateCloudinaryVideo(file: File) {
   if (!cloudName || !apiKey) {
     throw new Error('A configuração pública do Cloudinary está incompleta.');
   }
+}
+
+export function validateCloudinaryImage(file: File) {
+  if (!acceptedImageTypes.includes(file.type)) throw new Error('Use JPG, JPEG, PNG ou WEBP.');
+  if (!cloudName || !apiKey) throw new Error('A configuração pública do Cloudinary está incompleta.');
 }
 
 async function requestSignature(): Promise<CloudinarySignature> {
@@ -73,6 +79,39 @@ export async function uploadVideoToCloudinary(file: File, onProgress: (progress:
       reject(new Error(response?.error?.message || 'O Cloudinary recusou o vídeo.'));
     });
 
+    request.send(formData);
+  });
+}
+
+export async function uploadImageToCloudinary(file: File, onProgress: (progress: number) => void) {
+  validateCloudinaryImage(file);
+  const signed = await requestSignature();
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('api_key', signed.apiKey);
+  formData.append('timestamp', String(signed.timestamp));
+  formData.append('signature', signed.signature);
+  formData.append('folder', 'portfolio');
+
+  return new Promise<{ url: string; path: string }>((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`);
+    request.responseType = 'text';
+    request.upload.addEventListener('progress', (event) => {
+      if (event.lengthComputable) onProgress(Math.round((event.loaded / event.total) * 100));
+    });
+    request.addEventListener('error', () => reject(new Error('A conexão com o Cloudinary falhou.')));
+    request.addEventListener('abort', () => reject(new Error('O envio para o Cloudinary foi cancelado.')));
+    request.addEventListener('load', () => {
+      let response: CloudinaryResponse | null = null;
+      try { response = request.responseText ? JSON.parse(request.responseText) : null; } catch { response = null; }
+      if (request.status >= 200 && request.status < 300 && response?.secure_url) {
+        onProgress(100);
+        resolve({ url: response.secure_url, path: response.public_id || '' });
+        return;
+      }
+      reject(new Error(response?.error?.message || 'O Cloudinary recusou a imagem.'));
+    });
     request.send(formData);
   });
 }

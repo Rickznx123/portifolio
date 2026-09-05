@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { UploadCloud } from 'lucide-react';
 import { uploadFile, type UploadKind } from '../../lib/storage';
-import { uploadVideoToCloudinary } from '../../lib/cloudinary';
+import { uploadImageToCloudinary, uploadVideoToCloudinary } from '../../lib/cloudinary';
 
 type UploadState = 'idle' | 'uploading' | 'success' | 'error';
 
@@ -42,12 +42,14 @@ export default function UploadField({ kind, label, accept, value, onChange, onSt
           setProgress(progress);
           if (progress < 100) setStatus('Enviando vídeo...');
         })
-        : await uploadFile(file, kind, setProgress);
+        : kind === 'photo'
+          ? await uploadImageToCloudinary(file, setProgress)
+          : await uploadFile(file, kind, setProgress);
       onChange(result);
       setStatus('Upload concluído.');
       onStateChange?.('success');
     } catch (uploadError) {
-      console.error(kind === 'videos' || kind === 'showreel' ? '[Cloudinary] Falha no upload.' : '[Firebase Storage] Falha no upload.', uploadError);
+      console.error(kind === 'videos' || kind === 'showreel' || kind === 'photo' ? '[Cloudinary] Falha no upload.' : '[Firebase Storage] Falha no upload.', uploadError);
       setStatus('');
       setError(friendlyUploadError(uploadError));
       onStateChange?.('error');

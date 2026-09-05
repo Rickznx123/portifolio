@@ -77,7 +77,6 @@ export default function SettingsPage() {
     setError('');
     setMessage('Excluindo foto de perfil...');
     try {
-      await removeFile(form.photoPath);
       const nextForm = { ...form, photoUrl: '', photoPath: '' };
       setForm(nextForm);
       await saveSettings(nextForm);
