@@ -60,19 +60,12 @@ export default function PublicPortfolio() {
             <div className="hero-actions"><a href="#work" className="primary-btn">VER MEUS TRABALHOS <ArrowRight size={16} /></a><a href={settings.whatsappUrl} target="_blank" rel="noreferrer" className="secondary-btn">FALE COMIGO</a></div>
             <div className="scroll-indicator">ROLE PARA EXPLORAR <ChevronDown size={16} /></div>
           </motion.div>
-          <motion.div className="hero-visual" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.2 }}>
-            <div className="video-frame"><div className="video-overlay" />{featured?.videoUrl && <Video src={featured.videoUrl} poster={featured.thumbnailUrl} className="hero-video" autoPlay />}<div className="video-badge"><Play size={12} /> SHOWREEL</div></div>
-          </motion.div>
+          {settings.showreelUrl && <motion.div className="hero-visual" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.2 }}>
+            <div className="video-frame"><div className="video-overlay" /><Video src={settings.showreelUrl} className="hero-video" /><div className="video-badge"><Play size={12} /> SHOWREEL</div></div>
+          </motion.div>}
         </section>
 
-        <section id="work" className="section-frame selected-work">
-          <motion.div className="section-header" initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}><p className="eyebrow">SHOWREEL</p><h2>Uma seleção dos meus melhores trabalhos.</h2></motion.div>
-          <motion.div className="showreel-wrap" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <div className="showreel-video-shell">{settings.showreelUrl ? <Video src={settings.showreelUrl} className="showreel-video" /> : <div className="video-empty">O showreel será adicionado em breve.</div>}<div className="showreel-info"><div><span className="meta-label">SHOWREEL</span><h3>Uma seleção dos meus melhores trabalhos.</h3></div></div></div>
-          </motion.div>
-        </section>
-
-        <section className="section-frame portfolio-section">
+        <section id="work" className="section-frame portfolio-section">
           <div className="portfolio-topline"><div><p className="eyebrow">TRABALHOS SELECIONADOS</p><h2>Projetos em destaque</h2></div><div className="filter-row" aria-label="Filtros de portfólio"><button type="button" className={activeFilter === 'TODOS' ? 'filter active' : 'filter'} onClick={() => setActiveFilter('TODOS')}>TODOS</button>{portfolioCategories.map((category) => <button key={category} type="button" className={category === activeFilter ? 'filter active' : 'filter'} onClick={() => setActiveFilter(category)}>{category}</button>)}</div></div>
           {loading && <p className="empty-state">Carregando trabalhos...</p>}
           {!loading && filteredProjects.length === 0 && <p className="empty-state">Nenhum trabalho publicado nesta categoria.</p>}
