@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste Cloudinary Upload Widget</title>
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
+    <style>
+      :root { color-scheme: dark; font-family: Arial, sans-serif; background: #0a0a0b; color: #f4f2ee; }
+      body { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+      button { padding: 12px 18px; border: 0; border-radius: 8px; cursor: pointer; background: #f4f2ee; color: #111; font: inherit; font-weight: 700; }
+      .result { margin-top: 24px; }
+      pre { min-height: 180px; padding: 16px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; border: 1px solid #333; border-radius: 8px; background: #111; }
+      .url { overflow-wrap: anywhere; }
+      #event-log { display: grid; gap: 10px; padding: 0; list-style: none; }
+      #event-log li { padding: 12px; border: 1px solid #333; border-radius: 8px; background: #111; }
+      #event-log pre { min-height: 0; margin: 8px 0 0; padding: 10px; }
+      .error { color: #f0aaaa; }
+    </style>
+  </head>
+  <body>
+    <h1>Teste Cloudinary Upload Widget</h1>
+    <button id="upload-button" type="button">Selecionar arquivo</button>
+
+    <section class="result" aria-live="polite">
+      <p><strong>Evento recebido:</strong> <span id="event">Nenhum</span></p>
+      <p><strong>Status do upload:</strong> <span id="status">Aguardando teste.</span></p>
+      <p><strong>secure_url:</strong> <span id="url" class="url">Nenhuma.</span></p>
+      <p><strong>Resposta do Cloudinary:</strong></p>
+      <pre id="response">Nenhuma resposta ainda.</pre>
+      <p><strong>Eventos do widget:</strong></p>
+      <ul id="event-log"></ul>
+    </section>
+
+    <script>
+      const eventOutput = document.getElementById('event');
+      const statusOutput = document.getElementById('status');
+      const responseOutput = document.getElementById('response');
+      const urlOutput = document.getElementById('url');
+      const eventLog = document.getElementById('event-log');
+
+      function formatPayload(payload) {
+        if (payload === undefined) return '';
+        try {
+          return JSON.stringify(payload, null, 2);
+        } catch (serializationError) {
+          return String(serializationError);
+        }
+      }
+
+      function logWidgetEvent(eventName, payload) {
+        const serializedPayload = formatPayload(payload);
+        console.log('[Cloudinary Upload Widget]', eventName, payload);
+        eventOutput.textContent = eventName;
+        const item = document.createElement('li');
+        item.innerHTML = '<strong></strong>';
+        item.querySelector('strong').textContent = eventName;
+        if (serializedPayload) {
+          const payloadOutput = document.createElement('pre');
+          payloadOutput.textContent = serializedPayload;
+          item.appendChild(payloadOutput);
+        }
+        eventLog.prepend(item);
+      }
+
+      function logGlobalError(title, payload) {
+        console.error('[Cloudinary Widget Test]', title, payload);
+        const item = document.createElement('li');
+        item.className = 'error';
+        item.innerHTML = '<strong></strong>';
+        item.querySelector('strong').textContent = title;
+        const payloadOutput = document.createElement('pre');
+        payloadOutput.textContent = formatPayload(payload);
+        item.appendChild(payloadOutput);
+        eventLog.prepend(item);
+      }
+
+      window.onerror = (message, source, lineno, colno, error) => {
+        logGlobalError('window.onerror', { message, source, lineno, colno, error: error?.stack || error });
+      };
+
+      window.addEventListener('unhandledrejection', (event) => {
+        logGlobalError('unhandledrejection', event.reason);
+      });
+
+      const widget = cloudinary.createUploadWidget(
+        {
+          cloudName: 'kmpdippz',
+          uploadPreset: 'portfolio_unsigned',
+          sources: ['local'],
+          multiple: false,
+          clientAllowedFormats: ['mp4', 'mov', 'webm'],
+          resourceType: 'video'
+        },
+        (error, result) => {
+          if (error) {
+            logWidgetEvent(result?.event || 'error', error);
+            statusOutput.textContent = 'Erro';
+            responseOutput.textContent = formatPayload(error);
+            urlOutput.textContent = 'Nenhuma.';
+            return;
+          }
+
+          const eventName = result?.event || 'desconhecido';
+          logWidgetEvent(eventName, result?.info || result);
+
+          statusOutput.textContent = result?.info?.status || eventName || 'Processando';
+          responseOutput.textContent = formatPayload(result?.info || result);
+          urlOutput.textContent = result?.info?.secure_url || '(nenhuma secure_url)';
+        }
+      );
+
+      document.getElementById('upload-button').addEventListener('click', () => {
+        widget.open();
+      });
+    </script>
+  </body>
+</html>

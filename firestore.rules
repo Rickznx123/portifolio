@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isPortfolioAdmin() {
+      return request.auth != null && request.auth.uid == 'iu9DM6Q9FVT5wEh8yz2QchFGJ003';
+    }
+
+    match /projects/{projectId} {
+      allow read: if resource.data.published == true || isPortfolioAdmin();
+      allow create, update, delete: if isPortfolioAdmin();
+    }
+
+    match /settings/public {
+      allow read: if true;
+      allow write: if isPortfolioAdmin();
+    }
+  }
+}

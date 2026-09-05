@@ -1,0 +1,26 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isPortfolioAdmin() {
+      return request.auth != null && request.auth.uid == 'iu9DM6Q9FVT5wEh8yz2QchFGJ003';
+    }
+
+    match /videos/{fileName} {
+      allow read: if true;
+      allow write: if isPortfolioAdmin() && request.resource.size < 500 * 1024 * 1024 && request.resource.contentType.matches('video/(mp4|quicktime|webm)');
+      allow delete: if isPortfolioAdmin();
+    }
+
+    match /thumbnails/{fileName} {
+      allow read: if true;
+      allow write: if isPortfolioAdmin() && request.resource.size < 10 * 1024 * 1024 && request.resource.contentType.matches('image/(jpeg|png|webp)');
+      allow delete: if isPortfolioAdmin();
+    }
+
+    match /showreel/{fileName} {
+      allow read: if true;
+      allow write: if isPortfolioAdmin() && request.resource.size < 500 * 1024 * 1024 && request.resource.contentType.matches('video/(mp4|quicktime|webm)');
+      allow delete: if isPortfolioAdmin();
+    }
+  }
+}
