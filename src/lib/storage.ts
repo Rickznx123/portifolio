@@ -1,17 +1,18 @@
 import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from './firebase';
 
-export type UploadKind = 'videos' | 'thumbnails' | 'showreel';
+export type UploadKind = 'videos' | 'thumbnails' | 'showreel' | 'photo';
 
 const acceptedTypes: Record<UploadKind, string[]> = {
   videos: ['video/mp4', 'video/quicktime', 'video/webm'],
   thumbnails: ['image/jpeg', 'image/png', 'image/webp'],
   showreel: ['video/mp4', 'video/quicktime', 'video/webm'],
+  photo: ['image/jpeg', 'image/png', 'image/webp'],
 };
 
 export function validateUpload(file: File, kind: UploadKind) {
   if (!acceptedTypes[kind].includes(file.type)) {
-    throw new Error(kind === 'thumbnails' ? 'Use JPG, JPEG, PNG ou WEBP.' : 'Use MP4, MOV ou WEBM.');
+    throw new Error(kind === 'thumbnails' || kind === 'photo' ? 'Use JPG, JPEG, PNG ou WEBP.' : 'Use MP4, MOV ou WEBM.');
   }
 }
 

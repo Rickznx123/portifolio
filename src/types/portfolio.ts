@@ -38,6 +38,8 @@ export type PortfolioSettings = {
   whatsappUrl: string;
   showreelUrl: string;
   showreelPath?: string;
+  photoUrl: string;
+  photoPath?: string;
 };
 
 export const defaultSettings: PortfolioSettings = {
@@ -54,4 +56,5 @@ export const defaultSettings: PortfolioSettings = {
   whatsapp: '(66) 99240-2445',
   whatsappUrl: 'https://wa.me/5566992402445',
   showreelUrl: '',
+  photoUrl: '',
 };
