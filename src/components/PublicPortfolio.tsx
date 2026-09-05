@@ -15,7 +15,7 @@ const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } };
 
 function Video({ src, poster, className, autoPlay = false }: { src: string; poster?: string; className: string; autoPlay?: boolean }) {
   return (
-    <video className={className} autoPlay={autoPlay} muted loop playsInline poster={poster} preload={autoPlay ? 'metadata' : 'none'}>
+    <video className={className} autoPlay={autoPlay} muted={autoPlay} loop={autoPlay} playsInline controls poster={poster} preload={autoPlay ? 'metadata' : 'metadata'}>
       <source src={src} />
     </video>
   );
@@ -68,7 +68,7 @@ export default function PublicPortfolio() {
         <section id="work" className="section-frame selected-work">
           <motion.div className="section-header" initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}><p className="eyebrow">SHOWREEL</p><h2>Uma seleção dos meus melhores trabalhos.</h2></motion.div>
           <motion.div className="showreel-wrap" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-            <div className="showreel-video-shell">{settings.showreelUrl ? <Video src={settings.showreelUrl} className="showreel-video" autoPlay /> : <div className="video-empty">O showreel será adicionado em breve.</div>}<div className="showreel-info"><div><span className="meta-label">SHOWREEL</span><h3>Uma seleção dos meus melhores trabalhos.</h3></div></div></div>
+            <div className="showreel-video-shell">{settings.showreelUrl ? <Video src={settings.showreelUrl} className="showreel-video" /> : <div className="video-empty">O showreel será adicionado em breve.</div>}<div className="showreel-info"><div><span className="meta-label">SHOWREEL</span><h3>Uma seleção dos meus melhores trabalhos.</h3></div></div></div>
           </motion.div>
         </section>
 
