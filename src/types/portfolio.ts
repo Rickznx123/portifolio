@@ -27,6 +27,9 @@ export type PortfolioSettings = {
   name: string;
   title: string;
   description: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  heroDescription: string;
   bio: string;
   instagram: string;
   instagramUrl: string;
@@ -41,6 +44,9 @@ export const defaultSettings: PortfolioSettings = {
   name: 'Rickelmi',
   title: 'Editor de Vídeo / Motion Design',
   description: 'Transformo ideias em vídeos que prendem atenção.',
+  heroTitle: 'EDITOR DE VÍDEO',
+  heroSubtitle: 'MOTION DESIGN',
+  heroDescription: 'Criação e edição de vídeos para redes sociais, marcas, campanhas e conteúdo digital.',
   bio: 'Sou Rickelmi, editor de vídeo e criador visual. Trabalho principalmente com conteúdo para redes sociais, vídeos comerciais e peças visuais para marcas.\n\nMeu foco é transformar ideias em vídeos mais envolventes, combinando edição, ritmo, composição, motion design e identidade visual.\n\nEstou constantemente aprimorando minhas habilidades e estudando novas técnicas para elevar a qualidade dos meus trabalhos.',
   instagram: '@ricksantos.af',
   instagramUrl: 'https://instagram.com/ricksantos.af',

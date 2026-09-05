@@ -54,9 +54,9 @@ export default function PublicPortfolio() {
         <section className="hero section-frame">
           <motion.div className="hero-copy" initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.7 }}>
             <p className="eyebrow">{settings.name.toUpperCase()}</p>
-            <h1>EDITOR DE VÍDEO<span>MOTION DESIGN</span></h1>
+            <h1>{settings.heroTitle || 'EDITOR DE VÍDEO'}<span>{settings.heroSubtitle || 'MOTION DESIGN'}</span></h1>
             <p className="lead">{settings.description}</p>
-            <p className="subtitle">Criação e edição de vídeos para redes sociais, marcas, campanhas e conteúdo digital.</p>
+            <p className="subtitle">{settings.heroDescription || 'Criação e edição de vídeos para redes sociais, marcas, campanhas e conteúdo digital.'}</p>
             <div className="hero-actions"><a href="#work" className="primary-btn">VER MEUS TRABALHOS <ArrowRight size={16} /></a><a href={settings.whatsappUrl} target="_blank" rel="noreferrer" className="secondary-btn">FALE COMIGO</a></div>
             <div className="scroll-indicator">ROLE PARA EXPLORAR <ChevronDown size={16} /></div>
           </motion.div>
