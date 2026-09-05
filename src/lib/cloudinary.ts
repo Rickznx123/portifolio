@@ -55,10 +55,6 @@ export async function uploadVideoToCloudinary(file: File, onProgress: (progress:
     request.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`);
     request.responseType = 'text';
 
-    request.upload.addEventListener('progress', (event) => {
-      if (event.lengthComputable) onProgress(Math.round((event.loaded / event.total) * 100));
-    });
-
     request.addEventListener('error', () => reject(new Error('A conexão com o Cloudinary falhou.')));
     request.addEventListener('abort', () => reject(new Error('O envio para o Cloudinary foi cancelado.')));
     request.addEventListener('load', () => {
